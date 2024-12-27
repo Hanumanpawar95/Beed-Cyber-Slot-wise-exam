@@ -13,6 +13,9 @@ const upload = multer({ dest: 'uploads/' });
 // Serve static files (like HTML, CSS)
 app.use(express.static('public'));
 
+// Middleware to parse JSON requests
+app.use(express.json());
+
 // Handle CSV file upload and parsing
 app.post('/upload', upload.single('csvFile'), (req, res) => {
     if (!req.file) {
@@ -45,6 +48,11 @@ app.post('/upload', upload.single('csvFile'), (req, res) => {
             console.error(err);
             res.status(500).json({ error: 'Error parsing file' });
         });
+});
+
+// Handle any route that is not defined (to avoid sending HTML pages)
+app.use((req, res) => {
+    res.status(404).json({ error: 'Route not found' });
 });
 
 // Start server
