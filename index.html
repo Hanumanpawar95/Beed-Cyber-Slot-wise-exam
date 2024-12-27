@@ -5,7 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Uploader</title>
     <style>
-        /* Add your styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -36,15 +78,14 @@
 
                 // Check if the result is an array
                 if (Array.isArray(result)) {
-                    let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
-                    result.forEach((row, index) => {
+                    let tableHtml = "<table><thead><tr><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
+                    result.forEach((row) => {
                         tableHtml += `<tr>
-                            <td>${index + 1}</td>
-                            <td>${row.learnerName}</td>
-                            <td>${row.learnerCode}</td>
-                            <td>${row.BS_CIT}</td>
-                            <td>${row.BS_CLS}</td>
-                            <td>${row.BS_CSS}</td>
+                            <td>${row['Learner Name']}</td>
+                            <td>${row['Learner Code']}</td>
+                            <td>${row['BS-CIT']}</td>
+                            <td>${row['BS-CLS']}</td>
+                            <td>${row['BS-CSS']}</td>
                         </tr>`;
                     });
                     tableHtml += "</tbody></table>";
