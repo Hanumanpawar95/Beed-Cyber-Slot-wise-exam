@@ -5,83 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Uploader</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        h2 {
-            text-align: center;
-            color: #4CAF50;
-            margin-top: 0;
-        }
-
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:nth-child(odd) {
-            background-color: #fff;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        td {
-            color: #555;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin: 20px auto;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 200px;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #result {
-            margin-top: 30px;
-        }
+        /* Add your styles here */
     </style>
 </head>
 <body>
@@ -93,10 +17,7 @@
         <button type="submit">Upload</button>
     </form>
 
-    <!-- Result Section -->
     <div id="result"></div>
-
-    <!-- Print Button -->
     <button id="printButton">Print Report</button>
 
     <script>
@@ -110,27 +31,29 @@
                     body: formData,
                 });
 
+                // Ensure the response is JSON
                 const result = await response.json();
 
-                // Log parsed result data to inspect
-                console.log("Parsed Result:", result);
+                // Check if the result is an array
+                if (Array.isArray(result)) {
+                    let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
+                    result.forEach((row, index) => {
+                        tableHtml += `<tr>
+                            <td>${index + 1}</td>
+                            <td>${row.learnerName}</td>
+                            <td>${row.learnerCode}</td>
+                            <td>${row.BS_CIT}</td>
+                            <td>${row.BS_CLS}</td>
+                            <td>${row.BS_CSS}</td>
+                        </tr>`;
+                    });
+                    tableHtml += "</tbody></table>";
+                    document.getElementById("result").innerHTML = tableHtml;
+                } else {
+                    console.error("Unexpected response:", result);
+                    document.getElementById("result").textContent = "Error: Invalid response";
+                }
 
-                // Create a table to display the result
-                let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
-
-                result.forEach((row, index) => {
-                    tableHtml += `<tr>
-                        <td>${index + 1}</td>
-                        <td>${row.learnerName}</td>
-                        <td>${row.learnerCode}</td>
-                        <td>${row.BS_CIT}</td>
-                        <td>${row.BS_CLS}</td>
-                        <td>${row.BS_CSS}</td>
-                    </tr>`;
-                });
-
-                tableHtml += "</tbody></table>";
-                document.getElementById("result").innerHTML = tableHtml;
             } catch (err) {
                 console.error(err);
                 document.getElementById("result").textContent = "Error uploading file";
