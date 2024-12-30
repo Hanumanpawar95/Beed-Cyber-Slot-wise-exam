@@ -13,7 +13,7 @@
             padding: 0;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 50px auto;
             padding: 20px;
             background: #fff;
@@ -103,59 +103,8 @@
     </div>
 
     <script>
-        // Function to parse CSV
-        function parseCSV(content) {
-            const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
-            const headers = rows.shift().split(","); // First row as headers
-            const data = rows.map(row => {
-                const values = row.split(",");
-                return headers.reduce((acc, header, index) => {
-                    acc[header.trim()] = values[index].trim();
-                    return acc;
-                }, {});
-            });
-            return data;
-        }
-
-        // Function to render table
-        function renderTable(data) {
-            let tableHtml = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Sr. No.</th>
-                            <th>Learner Name</th>
-                            <th>Learner Code</th>
-                            <th>BS-CIT</th>
-                            <th>BS-CLS</th>
-                            <th>BS-CSS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            data.forEach((row, index) => {
-                // Skip rows where all exam slots are "-"
-                if (row["BS-CIT"] !== "-" || row["BS-CLS"] !== "-" || row["BS-CSS"] !== "-") {
-                    tableHtml += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${row["Learner Name"] || ""}</td>
-                            <td>${row["Learner Code"] || ""}</td>
-                            <td>${row["BS-CIT"] || ""}</td>
-                            <td>${row["BS-CLS"] || ""}</td>
-                            <td>${row["BS-CSS"] || ""}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            tableHtml += "</tbody></table>";
-            document.getElementById("result").innerHTML = tableHtml;
-        }
-
         // Upload form submit handler
-        document.getElementById("uploadForm").addEventListener("submit", (event) => {
+        document.getElementById("uploadForm").addEventListener("submit", async (event) => {
             event.preventDefault();
             const fileInput = document.getElementById("csvFile");
             const file = fileInput.files[0];
@@ -172,6 +121,70 @@
                 alert("Please select a CSV file to upload.");
             }
         });
+
+        // Function to parse CSV
+        function parseCSV(content) {
+            const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
+            const headers = rows.shift().split(","); // First row as headers
+            const data = rows.map(row => {
+                const values = row.split(",");
+                return headers.reduce((acc, header, index) => {
+                    acc[header.trim()] = values[index].trim();
+                    return acc;
+                }, {});
+            });
+            return data;
+        }
+
+        // Function to render table with learner data
+        function renderTable(data) {
+            // Create a map to store data for each learner
+            const learnerMap = {};
+
+            data.forEach((row) => {
+                const name = row["Learner Name"];
+                const code = row["Learner Code"];
+                const course = row["Course"];
+                const examSlot = row["Exam Slot"] || "-";
+
+                if (!learnerMap[code]) {
+                    learnerMap[code] = { name: name, "BS-CIT": "-", "BS-CLS": "-", "BS-CSS": "-" };
+                }
+
+                if (course === "BS-CIT" || course === "BS-CLS" || course === "BS-CSS") {
+                    learnerMap[code][course] = examSlot;
+                }
+            });
+
+            // Generate the table
+            let tableHtml = `<table>
+                <thead>
+                    <tr>
+                        <th>Learner Name</th>
+                        <th>Learner Code</th>
+                        <th>BS-CIT</th>
+                        <th>BS-CLS</th>
+                        <th>BS-CSS</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            let index = 1;
+            for (const code in learnerMap) {
+                const learner = learnerMap[code];
+                tableHtml += `<tr>
+                    <td>${learner.name}</td>
+                    <td>${code}</td>
+                    <td>${learner["BS-CIT"]}</td>
+                    <td>${learner["BS-CLS"]}</td>
+                    <td>${learner["BS-CSS"]}</td>
+                </tr>`;
+                index++;
+            }
+
+            tableHtml += "</tbody></table>";
+            document.getElementById("result").innerHTML = tableHtml;
+        }
 
         // Print functionality
         document.getElementById("printButton").addEventListener("click", function () {
