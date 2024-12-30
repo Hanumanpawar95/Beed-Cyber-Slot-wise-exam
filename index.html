@@ -42,27 +42,55 @@
 
         function parseCSV(content) {
             const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
-            const headers = rows.shift().split(","); // First row as headers
-            console.log("Headers:", headers); // Log the headers for debugging
+            const headers = rows.shift().split("\t"); // Assuming tab-separated headers
 
             const data = rows.map(row => {
-                const values = row.split(",");
+                const values = row.split("\t"); // Assuming tab-separated values
                 return headers.reduce((acc, header, index) => {
                     acc[header.trim()] = values[index] ? values[index].trim() : ""; // Handle missing values
                     return acc;
                 }, {});
             });
-
-            console.log("Parsed Data:", data); // Log parsed data for debugging
             return data;
         }
 
         function renderTable(data) {
+            // Create a map of learner data to group by learner name and code
+            const learnerData = {};
+
+            data.forEach((row) => {
+                if (row["Exam Slot"] !== "-") {
+                    const name = row["Name"];
+                    const learnerCode = row["Learner Code"];
+                    const course = row["Course"];
+                    const examSlot = row["Exam Slot"];
+
+                    if (!learnerData[name]) {
+                        learnerData[name] = {
+                            learnerCode: learnerCode,
+                            courses: {
+                                "BS-CIT": "",
+                                "BS-CLS": "",
+                                "BS-CSS": ""
+                            }
+                        };
+                    }
+
+                    // Map the exam slot to the respective course
+                    if (course === "BS-CIT") {
+                        learnerData[name].courses["BS-CIT"] = examSlot;
+                    } else if (course === "BS-CLS") {
+                        learnerData[name].courses["BS-CLS"] = examSlot;
+                    } else if (course === "BS-CSS") {
+                        learnerData[name].courses["BS-CSS"] = examSlot;
+                    }
+                }
+            });
+
             let tableHtml = `
                 <table>
                     <thead>
                         <tr>
-                            <th>Sr. No.</th>
                             <th>Learner Name</th>
                             <th>Learner Code</th>
                             <th>BS-CIT</th>
@@ -73,21 +101,19 @@
                     <tbody>
             `;
 
-            data.forEach((row, index) => {
-                // Skip rows where all exam slots are "-"
-                if (row["BS-CIT"] !== "-" || row["BS-CLS"] !== "-" || row["BS-CSS"] !== "-") {
-                    tableHtml += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${row["Learner Name"] || ""}</td>
-                            <td>${row["Learner Code"] || ""}</td>
-                            <td>${row["BS-CIT"] || ""}</td>
-                            <td>${row["BS-CLS"] || ""}</td>
-                            <td>${row["BS-CSS"] || ""}</td>
-                        </tr>
-                    `;
-                }
-            });
+            // Render rows for each learner
+            for (const learnerName in learnerData) {
+                const learner = learnerData[learnerName];
+                tableHtml += `
+                    <tr>
+                        <td>${learnerName}</td>
+                        <td>${learner.learnerCode}</td>
+                        <td>${learner.courses["BS-CIT"] || ""}</td>
+                        <td>${learner.courses["BS-CLS"] || ""}</td>
+                        <td>${learner.courses["BS-CSS"] || ""}</td>
+                    </tr>
+                `;
+            }
 
             tableHtml += "</tbody></table>";
             document.getElementById("result").innerHTML = tableHtml;
@@ -95,4 +121,3 @@
     </script>
 </body>
 </html>
-   
