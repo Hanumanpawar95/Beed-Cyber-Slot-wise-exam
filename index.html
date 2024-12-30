@@ -44,8 +44,12 @@
             const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
             const headers = rows.shift().split("\t"); // Assuming tab-separated headers
 
+            console.log("Headers:", headers); // Debugging: Check headers
+
             const data = rows.map(row => {
                 const values = row.split("\t"); // Assuming tab-separated values
+                console.log("Row values:", values); // Debugging: Check row values
+
                 return headers.reduce((acc, header, index) => {
                     acc[header.trim()] = values[index] ? values[index].trim() : ""; // Handle missing values
                     return acc;
@@ -55,8 +59,10 @@
         }
 
         function renderTable(data) {
-            // Create a map of learner data to group by learner name and code
             const learnerData = {};
+
+            // Log data to check structure
+            console.log("Parsed Data:", data); // Debugging: Check parsed data
 
             data.forEach((row) => {
                 if (row["Exam Slot"] !== "-") {
@@ -101,7 +107,6 @@
                     <tbody>
             `;
 
-            // Render rows for each learner
             for (const learnerName in learnerData) {
                 const learner = learnerData[learnerName];
                 tableHtml += `
