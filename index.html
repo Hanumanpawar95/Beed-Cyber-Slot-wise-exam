@@ -103,70 +103,89 @@
     </div>
 
     <script>
+        // Upload form submit handler
         document.getElementById("uploadForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-
-    try {
-        const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-        });
-
-        const result = await response.json();
-
-        // Log the parsed data to debug
-        console.log("Parsed Result:", result);
-
-        // Create a map to store data for each learner
-        const learnerMap = {};
-
-        result.forEach((row) => {
-            const name = row["Name"];
-            const code = row["Learner Code"];
-            const course = row["Course"];
-            const examSlot = row["Exam Slot"] || "-";
-
-            if (!learnerMap[code]) {
-                learnerMap[code] = { name: name, "BS-CIT": "-", "BS-CLS": "-", "BS-CSS": "-" };
-            }
-
-            if (course === "BS-CIT" || course === "BS-CLS" || course === "BS-CSS") {
-                learnerMap[code][course] = examSlot;
+            event.preventDefault();
+            const fileInput = document.getElementById("csvFile");
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const csvContent = reader.result;
+                    const parsedData = parseCSV(csvContent);
+                    renderTable(parsedData);
+                    document.getElementById("printButton").style.display = "block";
+                };
+                reader.readAsText(file);
+            } else {
+                alert("Please select a CSV file to upload.");
             }
         });
 
-        // Generate the table
-        let tableHtml = `<table>
-            <thead>
-                <tr>
-                    <th>Learner Name</th>
-                    <th>Learner Code</th>
-                    <th>BS-CIT</th>
-                    <th>BS-CLS</th>
-                    <th>BS-CSS</th>
-                </tr>
-            </thead>
-            <tbody>`;
-
-        for (const code in learnerMap) {
-            const learner = learnerMap[code];
-            tableHtml += `<tr>
-                <td>${learner.name}</td>
-                <td>${code}</td>
-                <td>${learner["BS-CIT"]}</td>
-                <td>${learner["BS-CLS"]}</td>
-                <td>${learner["BS-CSS"]}</td>
-            </tr>`;
+        // Function to parse CSV
+        function parseCSV(content) {
+            const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
+            const headers = rows.shift().split(","); // First row as headers
+            const data = rows.map(row => {
+                const values = row.split(",");
+                return headers.reduce((acc, header, index) => {
+                    acc[header.trim()] = values[index].trim();
+                    return acc;
+                }, {});
+            });
+            return data;
         }
 
-        tableHtml += "</tbody></table>";
-        document.getElementById("result").innerHTML = tableHtml;
-    } catch (err) {
-        console.error(err);
-        document.getElementById("result").textContent = "Error uploading file";
-    }
-});
+        // Function to render table with learner data
+        function renderTable(data) {
+            // Create a map to store data for each learner
+            const learnerMap = {};
+
+            data.forEach((row) => {
+                const name = row["Learner Name"];
+                const code = row["Learner Code"];
+                const course = row["Course"];
+                const examSlot = row["Exam Slot"] || "-";
+
+                if (!learnerMap[code]) {
+                    learnerMap[code] = { name: name, "BS-CIT": "-", "BS-CLS": "-", "BS-CSS": "-" };
+                }
+
+                if (course === "BS-CIT" || course === "BS-CLS" || course === "BS-CSS") {
+                    learnerMap[code][course] = examSlot;
+                }
+            });
+
+            // Generate the table
+            let tableHtml = `<table>
+                <thead>
+                    <tr>
+                        <th>Learner Name</th>
+                        <th>Learner Code</th>
+                        <th>BS-CIT</th>
+                        <th>BS-CLS</th>
+                        <th>BS-CSS</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            let index = 1;
+            for (const code in learnerMap) {
+                const learner = learnerMap[code];
+                tableHtml += `<tr>
+                    <td>${learner.name}</td>
+                    <td>${code}</td>
+                    <td>${learner["BS-CIT"]}</td>
+                    <td>${learner["BS-CLS"]}</td>
+                    <td>${learner["BS-CSS"]}</td>
+                </tr>`;
+                index++;
+            }
+
+            tableHtml += "</tbody></table>";
+            document.getElementById("result").innerHTML = tableHtml;
+        }
+
         // Print functionality
         document.getElementById("printButton").addEventListener("click", function () {
             const printContent = document.getElementById("result").innerHTML;
