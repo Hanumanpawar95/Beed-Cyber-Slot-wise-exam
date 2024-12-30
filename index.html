@@ -171,20 +171,24 @@
 
                 // Use PapaParse to parse the CSV file
                 Papa.parse(file, {
+                    header: true,  // Ensure headers are used for column names
+                    skipEmptyLines: true,  // Skip empty lines
+                    dynamicTyping: true,  // Automatically type numbers
                     complete: function(results) {
                         // Log parsed data to inspect
-                        console.log(results);
+                        console.log(results.data);
 
                         // Create a table to display the result
-                        let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
+                        let tableHtml = "<table><thead><tr><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
 
                         // To keep track of learners and their exam slots
                         const learnerData = {};
 
                         results.data.forEach((row) => {
                             const learnerCode = row['Learner Code'];
-                            const examSlot = row['Course'];
+                            const examSlot = row['Exam Slot'];
                             const learnerName = row['Name'] || 'N/A';
+                            const course = row['Course'];
 
                             // Initialize learner data if not already present
                             if (!learnerData[learnerCode]) {
@@ -198,12 +202,12 @@
                             }
 
                             // Assign exam slots based on course
-                            if (examSlot === 'BS-CIT') {
-                                learnerData[learnerCode].BS_CIT = row['Exam Slot'] || '-';
-                            } else if (examSlot === 'BS-CLS') {
-                                learnerData[learnerCode].BS_CLS = row['Exam Slot'] || '-';
-                            } else if (examSlot === 'BS-CSS') {
-                                learnerData[learnerCode].BS_CSS = row['Exam Slot'] || '-';
+                            if (course === 'BS-CIT') {
+                                learnerData[learnerCode].BS_CIT = examSlot || '-';
+                            } else if (course === 'BS-CLS') {
+                                learnerData[learnerCode].BS_CLS = examSlot || '-';
+                            } else if (course === 'BS-CSS') {
+                                learnerData[learnerCode].BS_CSS = examSlot || '-';
                             }
                         });
 
@@ -213,7 +217,6 @@
                             const learner = learnerData[learnerCode];
                             serialNumber++;
                             tableHtml += `<tr>
-                                <td>${serialNumber}</td>
                                 <td>${learner.name}</td>
                                 <td>${learner.learnerCode}</td>
                                 <td>${learner.BS_CIT}</td>
@@ -224,6 +227,10 @@
 
                         tableHtml += "</tbody></table>";
                         document.getElementById("result").innerHTML = tableHtml;
+                    },
+                    error: function(error) {
+                        console.error("Error parsing CSV file:", error);
+                        alert("There was an error parsing the CSV file.");
                     }
                 });
             } catch (err) {
@@ -243,9 +250,8 @@
             printWindow.document.write('th, td { padding: 15px; text-align: left; border: 1px solid #ddd; }');
             printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
             printWindow.document.write('tr:nth-child(even) { background-color: #f9f9f9; }');
-            printWindow.document.write('tr:nth-child(odd) { background-color: #fff; }');
-            printWindow.document.write('tr:hover { background-color: #f1f1f1; }');
-            printWindow.document.write('</style></head><body>');
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
             printWindow.document.write(printContent);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
