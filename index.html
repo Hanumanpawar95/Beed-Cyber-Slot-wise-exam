@@ -132,6 +132,18 @@
         #result {
             margin-top: 30px;
         }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
     </style>
     <!-- Include PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -154,6 +166,12 @@
         <!-- Print Button -->
         <button id="printButton">Print Report</button>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
+        <p><em>This data is computer generated.</em></p>
+    </footer>
 
     <script>
         document.getElementById("uploadForm").addEventListener("submit", async (event) => {
@@ -255,9 +273,13 @@
             printWindow.document.write('th, td { padding: 15px; text-align: left; border: 1px solid #ddd; }');
             printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
             printWindow.document.write('tr:nth-child(even) { background-color: #f9f9f9; }');
+            printWindow.document.write('tr:nth-child(odd) { background-color: #fff; }');
+            printWindow.document.write('tr:hover { background-color: #f1f1f1; }');
+            printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
             printWindow.document.write('</style>');
             printWindow.document.write('</head><body>');
             printWindow.document.write(printContent);
+            printWindow.document.write('<footer>This page developed by <strong>Mr. Hanuman Pawar</strong>.</footer>');
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.print();
