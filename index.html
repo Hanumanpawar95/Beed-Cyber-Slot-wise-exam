@@ -133,6 +133,8 @@
             margin-top: 30px;
         }
     </style>
+    <!-- Include PapaParse Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -159,65 +161,71 @@
             const formData = new FormData(event.target);
 
             try {
-                const response = await fetch("/upload", {
-                    method: "POST",
-                    body: formData,
-                });
-
-                const result = await response.json();
-
-                // Log parsed result data to inspect
-                console.log(result);
-
-                // Create a table to display the result
-                let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
-
-                // To keep track of learners and their exam slots
-                const learnerData = {};
-
-                result.forEach((row) => {
-                    const learnerCode = row['Learner Code'];
-                    const examSlot = row['Course'];
-                    const learnerName = row['Name'] || 'N/A';
-
-                    // Initialize learner data if not already present
-                    if (!learnerData[learnerCode]) {
-                        learnerData[learnerCode] = {
-                            name: learnerName,
-                            learnerCode: learnerCode,
-                            BS_CIT: '-',
-                            BS_CLS: '-',
-                            BS_CSS: '-'
-                        };
-                    }
-
-                    // Assign exam slots based on course
-                    if (examSlot === 'BS-CIT') {
-                        learnerData[learnerCode].BS_CIT = row['Exam Slot'] || '-';
-                    } else if (examSlot === 'BS-CLS') {
-                        learnerData[learnerCode].BS_CLS = row['Exam Slot'] || '-';
-                    } else if (examSlot === 'BS-CSS') {
-                        learnerData[learnerCode].BS_CSS = row['Exam Slot'] || '-';
-                    }
-                });
-
-                // Render learner data to table
-                let serialNumber = 0;
-                for (const learnerCode in learnerData) {
-                    const learner = learnerData[learnerCode];
-                    serialNumber++;
-                    tableHtml += `<tr>
-                        <td>${serialNumber}</td>
-                        <td>${learner.name}</td>
-                        <td>${learner.learnerCode}</td>
-                        <td>${learner.BS_CIT}</td>
-                        <td>${learner.BS_CLS}</td>
-                        <td>${learner.BS_CSS}</td>
-                    </tr>`;
+                // Get the uploaded file
+                const file = document.getElementById("csvFile").files[0];
+                
+                if (!file) {
+                    alert('Please select a CSV file');
+                    return;
                 }
 
-                tableHtml += "</tbody></table>";
-                document.getElementById("result").innerHTML = tableHtml;
+                // Use PapaParse to parse the CSV file
+                Papa.parse(file, {
+                    complete: function(results) {
+                        // Log parsed data to inspect
+                        console.log(results);
+
+                        // Create a table to display the result
+                        let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
+
+                        // To keep track of learners and their exam slots
+                        const learnerData = {};
+
+                        results.data.forEach((row) => {
+                            const learnerCode = row['Learner Code'];
+                            const examSlot = row['Course'];
+                            const learnerName = row['Name'] || 'N/A';
+
+                            // Initialize learner data if not already present
+                            if (!learnerData[learnerCode]) {
+                                learnerData[learnerCode] = {
+                                    name: learnerName,
+                                    learnerCode: learnerCode,
+                                    BS_CIT: '-',
+                                    BS_CLS: '-',
+                                    BS_CSS: '-'
+                                };
+                            }
+
+                            // Assign exam slots based on course
+                            if (examSlot === 'BS-CIT') {
+                                learnerData[learnerCode].BS_CIT = row['Exam Slot'] || '-';
+                            } else if (examSlot === 'BS-CLS') {
+                                learnerData[learnerCode].BS_CLS = row['Exam Slot'] || '-';
+                            } else if (examSlot === 'BS-CSS') {
+                                learnerData[learnerCode].BS_CSS = row['Exam Slot'] || '-';
+                            }
+                        });
+
+                        // Render learner data to table
+                        let serialNumber = 0;
+                        for (const learnerCode in learnerData) {
+                            const learner = learnerData[learnerCode];
+                            serialNumber++;
+                            tableHtml += `<tr>
+                                <td>${serialNumber}</td>
+                                <td>${learner.name}</td>
+                                <td>${learner.learnerCode}</td>
+                                <td>${learner.BS_CIT}</td>
+                                <td>${learner.BS_CLS}</td>
+                                <td>${learner.BS_CSS}</td>
+                            </tr>`;
+                        }
+
+                        tableHtml += "</tbody></table>";
+                        document.getElementById("result").innerHTML = tableHtml;
+                    }
+                });
             } catch (err) {
                 console.error(err);
                 document.getElementById("result").textContent = "Error uploading file";
