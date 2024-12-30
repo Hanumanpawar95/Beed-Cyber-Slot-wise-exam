@@ -43,18 +43,22 @@
         function parseCSV(content) {
             const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
             const headers = rows.shift().split("\t"); // Assuming tab-separated headers
-
             console.log("Headers:", headers); // Debugging: Check headers
 
-            const data = rows.map(row => {
+            const data = rows.map((row, rowIndex) => {
                 const values = row.split("\t"); // Assuming tab-separated values
+                if (values.length !== headers.length) {
+                    console.error(`Row ${rowIndex + 1} does not have the expected number of columns. Row values:`, values);
+                    return null; // Skip invalid rows
+                }
                 console.log("Row values:", values); // Debugging: Check row values
 
                 return headers.reduce((acc, header, index) => {
                     acc[header.trim()] = values[index] ? values[index].trim() : ""; // Handle missing values
                     return acc;
                 }, {});
-            });
+            }).filter(item => item !== null); // Filter out invalid rows
+
             return data;
         }
 
