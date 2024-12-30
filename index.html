@@ -7,130 +7,79 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
         }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-top: 20px;
-        }
-
-        h2 {
-            text-align: center;
-            color: #4CAF50;
-            margin-top: 0;
-        }
-
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 50px auto;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 1.5em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .upload-form {
+            margin-bottom: 20px;
+        }
+        .custom-file-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 10px auto;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #e04e2c;
+        }
         table {
             width: 100%;
-            margin-top: 30px;
             border-collapse: collapse;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            border: 2px solid #ddd;
             border-radius: 8px;
             overflow: hidden;
         }
-
         th, td {
             padding: 15px;
             text-align: left;
             border: 1px solid #ddd;
         }
-
         th {
             background-color: #FF5733;
             color: white;
             font-weight: bold;
             text-transform: uppercase;
         }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
         tr:nth-child(odd) {
             background-color: #fff;
         }
-
         tr:hover {
             background-color: #f1f1f1;
-        }
-
-        td {
-            color: #555;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin: 20px auto;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 200px;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .upload-form {
-            margin-top: 20px;
-        }
-
-        .upload-form input[type="file"] {
-            display: none;
-        }
-
-        .custom-file-label {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .upload-form button {
-            background-color: #FF5733;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .upload-form button:hover {
-            background-color: #e84c31;
-        }
-
-        #result {
-            margin-top: 30px;
         }
     </style>
 </head>
@@ -140,9 +89,9 @@
         <h2>Final Exam Slot Wise</h2>
 
         <!-- Upload Form -->
-        <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+        <form id="uploadForm" class="upload-form">
             <label class="custom-file-label" for="csvFile">Browse File</label>
-            <input id="csvFile" type="file" name="csvFile" accept=".csv" required />
+            <input id="csvFile" type="file" accept=".csv" required />
             <button type="submit">Upload</button>
         </form>
 
@@ -150,51 +99,77 @@
         <div id="result"></div>
 
         <!-- Print Button -->
-        <button id="printButton">Print Report</button>
+        <button id="printButton" style="display: none;">Print Report</button>
     </div>
 
     <script>
-        document.getElementById("uploadForm").addEventListener("submit", async (event) => {
+        // Function to parse CSV
+        function parseCSV(content) {
+            const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
+            const headers = rows.shift().split(","); // First row as headers
+            const data = rows.map(row => {
+                const values = row.split(",");
+                return headers.reduce((acc, header, index) => {
+                    acc[header.trim()] = values[index].trim();
+                    return acc;
+                }, {});
+            });
+            return data;
+        }
+
+        // Function to render table
+        function renderTable(data) {
+            let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Learner Name</th>
+                            <th>Learner Code</th>
+                            <th>BS-CIT</th>
+                            <th>BS-CLS</th>
+                            <th>BS-CSS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach((row, index) => {
+                // Skip rows where all exam slots are "-"
+                if (row["BS-CIT"] !== "-" || row["BS-CLS"] !== "-" || row["BS-CSS"] !== "-") {
+                    tableHtml += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${row["Learner Name"] || ""}</td>
+                            <td>${row["Learner Code"] || ""}</td>
+                            <td>${row["BS-CIT"] || ""}</td>
+                            <td>${row["BS-CLS"] || ""}</td>
+                            <td>${row["BS-CSS"] || ""}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            tableHtml += "</tbody></table>";
+            document.getElementById("result").innerHTML = tableHtml;
+        }
+
+        // Upload form submit handler
+        document.getElementById("uploadForm").addEventListener("submit", (event) => {
             event.preventDefault();
-            const formData = new FormData(event.target);
-
-            try {
-                const response = await fetch("/upload", {
-                    method: "POST",
-                    body: formData,
-                });
-
-                const result = await response.json();
-
-                // Log parsed result data to inspect
-                console.log("Parsed Result:", result);
-
-                // Create a table to display the result
-                let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
-
-                // Initialize serial number counter
-                let serialNumber = 0;
-
-                // Filter rows where all exam slots are "-"
-                result.forEach((row) => {
-                    if (row.BS_CIT !== "-" || row.BS_CLS !== "-" || row.BS_CSS !== "-") {
-                        serialNumber++;
-                        tableHtml += `<tr>
-                            <td>${serialNumber}</td>
-                            <td>${row.learnerName}</td>
-                            <td>${row.learnerCode}</td>
-                            <td>${row.BS_CIT}</td>
-                            <td>${row.BS_CLS}</td>
-                            <td>${row.BS_CSS}</td>
-                        </tr>`;
-                    }
-                });
-
-                tableHtml += "</tbody></table>";
-                document.getElementById("result").innerHTML = tableHtml;
-            } catch (err) {
-                console.error(err);
-                document.getElementById("result").textContent = "Error uploading file";
+            const fileInput = document.getElementById("csvFile");
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const csvContent = reader.result;
+                    const parsedData = parseCSV(csvContent);
+                    renderTable(parsedData);
+                    document.getElementById("printButton").style.display = "block";
+                };
+                reader.readAsText(file);
+            } else {
+                alert("Please select a CSV file to upload.");
             }
         });
 
