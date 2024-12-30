@@ -179,7 +179,7 @@
                         console.log(results.data);
 
                         // Create a table to display the result
-                        let tableHtml = "<table><thead><tr><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
+                        let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th></tr></thead><tbody>";
 
                         // To keep track of learners and their exam slots
                         const learnerData = {};
@@ -211,18 +211,23 @@
                             }
                         });
 
-                        // Render learner data to table
+                        // Render learner data to table with Sr. No.
                         let serialNumber = 0;
                         for (const learnerCode in learnerData) {
                             const learner = learnerData[learnerCode];
-                            serialNumber++;
-                            tableHtml += `<tr>
-                                <td>${learner.name}</td>
-                                <td>${learner.learnerCode}</td>
-                                <td>${learner.BS_CIT}</td>
-                                <td>${learner.BS_CLS}</td>
-                                <td>${learner.BS_CSS}</td>
-                            </tr>`;
+
+                            // Only display rows with valid exam slots (not '-')
+                            if (learner.BS_CIT !== '-' || learner.BS_CLS !== '-' || learner.BS_CSS !== '-') {
+                                serialNumber++;
+                                tableHtml += `<tr>
+                                    <td>${serialNumber}</td>
+                                    <td>${learner.name}</td>
+                                    <td>${learner.learnerCode}</td>
+                                    <td>${learner.BS_CIT !== '-' ? learner.BS_CIT : ''}</td>
+                                    <td>${learner.BS_CLS !== '-' ? learner.BS_CLS : ''}</td>
+                                    <td>${learner.BS_CSS !== '-' ? learner.BS_CSS : ''}</td>
+                                </tr>`;
+                            }
                         }
 
                         tableHtml += "</tbody></table>";
