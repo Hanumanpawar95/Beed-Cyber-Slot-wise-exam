@@ -3,208 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Uploader</title>
+    <title>CSV File Upload</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        h2 {
-            font-size: 1.5em;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        .upload-form {
-            margin-bottom: 20px;
-        }
-        .custom-file-label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #333;
-        }
-        input[type="file"] {
-            display: block;
-            margin: 10px auto;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #FF5733;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        button:hover {
-            background-color: #e04e2c;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
-            border-radius: 8px;
-            overflow: hidden;
         }
         th, td {
-            padding: 15px;
-            text-align: left;
+            padding: 8px;
             border: 1px solid #ddd;
+            text-align: left;
         }
         th {
-            background-color: #FF5733;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:nth-child(odd) {
-            background-color: #fff;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f4f4f4;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Beed Cyber Infotech KYP</h1>
-        <h2>Final Exam Slot Wise</h2>
-
-        <!-- Upload Form -->
-        <form id="uploadForm" class="upload-form">
-            <label class="custom-file-label" for="csvFile">Browse File</label>
-            <input id="csvFile" type="file" accept=".csv" required />
-            <button type="submit">Upload</button>
-        </form>
-
-        <!-- Result Section -->
-        <div id="result"></div>
-
-        <!-- Print Button -->
-        <button id="printButton" style="display: none;">Print Report</button>
-    </div>
+    <h2>Upload CSV File</h2>
+    <input type="file" id="csvFile" accept=".csv">
+    <div id="result"></div>
 
     <script>
-        // Upload form submit handler
-        document.getElementById("uploadForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const fileInput = document.getElementById("csvFile");
-            const file = fileInput.files[0];
-            if (file) {
+        document.getElementById('csvFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.name.endsWith('.csv')) {
                 const reader = new FileReader();
-                reader.onload = function () {
-                    const csvContent = reader.result;
-                    const parsedData = parseCSV(csvContent);
-                    renderTable(parsedData);
-                    document.getElementById("printButton").style.display = "block";
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const data = parseCSV(content);
+                    renderTable(data);
                 };
                 reader.readAsText(file);
             } else {
-                alert("Please select a CSV file to upload.");
+                alert("Please upload a valid CSV file.");
             }
         });
 
-        // Function to parse CSV
         function parseCSV(content) {
             const rows = content.split("\n").filter(row => row.trim() !== ""); // Remove empty rows
             const headers = rows.shift().split(","); // First row as headers
+            console.log("Headers:", headers); // Log the headers for debugging
+
             const data = rows.map(row => {
                 const values = row.split(",");
                 return headers.reduce((acc, header, index) => {
-                    acc[header.trim()] = values[index].trim();
+                    acc[header.trim()] = values[index] ? values[index].trim() : ""; // Handle missing values
                     return acc;
                 }, {});
             });
+
+            console.log("Parsed Data:", data); // Log parsed data for debugging
             return data;
         }
 
-        // Function to render table with learner data
         function renderTable(data) {
-            // Create a map to store data for each learner
-            const learnerMap = {};
+            let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Learner Name</th>
+                            <th>Learner Code</th>
+                            <th>BS-CIT</th>
+                            <th>BS-CLS</th>
+                            <th>BS-CSS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
 
-            data.forEach((row) => {
-                const name = row["Learner Name"];
-                const code = row["Learner Code"];
-                const course = row["Course"];
-                const examSlot = row["Exam Slot"] || "-";
-
-                if (!learnerMap[code]) {
-                    learnerMap[code] = { name: name, "BS-CIT": "-", "BS-CLS": "-", "BS-CSS": "-" };
-                }
-
-                if (course === "BS-CIT" || course === "BS-CLS" || course === "BS-CSS") {
-                    learnerMap[code][course] = examSlot;
+            data.forEach((row, index) => {
+                // Skip rows where all exam slots are "-"
+                if (row["BS-CIT"] !== "-" || row["BS-CLS"] !== "-" || row["BS-CSS"] !== "-") {
+                    tableHtml += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${row["Learner Name"] || ""}</td>
+                            <td>${row["Learner Code"] || ""}</td>
+                            <td>${row["BS-CIT"] || ""}</td>
+                            <td>${row["BS-CLS"] || ""}</td>
+                            <td>${row["BS-CSS"] || ""}</td>
+                        </tr>
+                    `;
                 }
             });
-
-            // Generate the table
-            let tableHtml = `<table>
-                <thead>
-                    <tr>
-                        <th>Learner Name</th>
-                        <th>Learner Code</th>
-                        <th>BS-CIT</th>
-                        <th>BS-CLS</th>
-                        <th>BS-CSS</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-
-            let index = 1;
-            for (const code in learnerMap) {
-                const learner = learnerMap[code];
-                tableHtml += `<tr>
-                    <td>${learner.name}</td>
-                    <td>${code}</td>
-                    <td>${learner["BS-CIT"]}</td>
-                    <td>${learner["BS-CLS"]}</td>
-                    <td>${learner["BS-CSS"]}</td>
-                </tr>`;
-                index++;
-            }
 
             tableHtml += "</tbody></table>";
             document.getElementById("result").innerHTML = tableHtml;
         }
-
-        // Print functionality
-        document.getElementById("printButton").addEventListener("click", function () {
-            const printContent = document.getElementById("result").innerHTML;
-            const printWindow = window.open('', '', 'height=500, width=800');
-            printWindow.document.write('<html><head><title>Print Report</title>');
-            printWindow.document.write('<style>');
-            printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
-            printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; }');
-            printWindow.document.write('th, td { padding: 15px; text-align: left; border: 1px solid #ddd; }');
-            printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
-            printWindow.document.write('tr:nth-child(even) { background-color: #f9f9f9; }');
-            printWindow.document.write('tr:nth-child(odd) { background-color: #fff; }');
-            printWindow.document.write('tr:hover { background-color: #f1f1f1; }');
-            printWindow.document.write('</style></head><body>');
-            printWindow.document.write(printContent);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-        });
     </script>
 </body>
 </html>
+   
