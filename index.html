@@ -263,7 +263,7 @@ th {
             }
         });
 
-   // Print functionality
+  // Print functionality
 document.getElementById("printButton").addEventListener("click", function () {
     const printContent = document.getElementById("result").innerHTML;
     const currentDate = new Date();
@@ -274,7 +274,7 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.write('<style>');
     printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
     printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; border: 3px solid #000; }'); // Dark black border for table
-    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; }'); // Dark black border for cells
+    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; vertical-align: middle; }'); // Dark black border for cells and center alignment
     printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
     printWindow.document.write('td:last-child { width: 200px; }'); // Increase the width of the Present Student Sign column
     printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
