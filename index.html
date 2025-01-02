@@ -263,32 +263,32 @@ th {
             }
         });
 
-        // Print functionality
-        document.getElementById("printButton").addEventListener("click", function () {
-            const printContent = document.getElementById("result").innerHTML;
-            const currentDate = new Date();
-            const formattedDate = currentDate.toLocaleString(); // Localized date format
+       // Print functionality
+document.getElementById("printButton").addEventListener("click", function () {
+    const printContent = document.getElementById("result").innerHTML;
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString(); // Localized date format
 
-            const printWindow = window.open('', '', 'height=500, width=800');
-            printWindow.document.write('<html><head><title>Print Report</title>');
-            printWindow.document.write('<style>');
-            printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
-            printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; }');
-            printWindow.document.write('th, td { padding: 15px; text-align: left; border: 1px solid #ddd; }');
-            printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
-            printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
-            printWindow.document.write('</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(printContent);
-            printWindow.document.write('<footer>');
-            printWindow.document.write('<p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>');
-            printWindow.document.write('<p><em>This data is computer generated.</em></p>');
-            printWindow.document.write('<p><strong>Report Date & Time: ' + formattedDate + '</strong></p>');
-            printWindow.document.write('</footer>');
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-        });
+    const printWindow = window.open('', '', 'height=500, width=800');
+    printWindow.document.write('<html><head><title>Print Report</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; border: 3px solid #000; }'); // Dark black border for table
+    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; }'); // Dark black border for cells
+    printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
+    printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
+    printWindow.document.write('</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent);
+    printWindow.document.write('<footer>');
+    printWindow.document.write('<p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>');
+    printWindow.document.write('<p><em>This data is computer generated.</em></p>');
+    printWindow.document.write('<p><strong>Report Date & Time: ' + formattedDate + '</strong></p>');
+    printWindow.document.write('</footer>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+});
     </script>
 </body>
 </html>
