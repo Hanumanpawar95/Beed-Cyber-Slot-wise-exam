@@ -1,3 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Uploader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-top: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+       table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: 3px solid #000; /* Dark black border for table */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border: 3px solid #000; /* Dark black border for cells */
+}
+
+th {
+    background-color: #FF5733;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+     tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #555;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px auto;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 200px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .upload-form {
+            margin-top: 20px;
+        }
+
+        .upload-form input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-label {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .upload-form button {
+            background-color: #FF5733;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .upload-form button:hover {
+            background-color: #e84c31;
+        }
+
+        #result {
+            margin-top: 30px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+    <!-- Include PapaParse Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Beed Cyber Infotech KYP</h1>
+        <h2>Final Exam Slot Wise</h2>
+
+        <!-- Upload Form -->
+        <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+            <label class="custom-file-label" for="csvFile">Browse File</label>
+            <input id="csvFile" type="file" name="csvFile" accept=".csv" required />
+            <button type="submit">Upload</button>
+        </form>
+
+        <!-- Result Section -->
+        <div id="result"></div>
+
+        <!-- Print Button -->
+        <button id="printButton">Print Report</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
+        <p><em>This data is computer generated.</em></p>
+    </footer>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            try {
+                // Get the uploaded file
+                const file = document.getElementById("csvFile").files[0];
+                
+                if (!file) {
+                    alert('Please select a CSV file');
+                    return;
+                }
+
+                // Use PapaParse to parse the CSV file
+                Papa.parse(file, {
+                    header: true,  // Ensure headers are used for column names
+                    skipEmptyLines: true,  // Skip empty lines
+                    dynamicTyping: true,  // Automatically type numbers
+                    complete: function(results) {
+                        // Log parsed data to inspect
+                        console.log(results.data);
+
+                        // Create a table to display the result
+                        let tableHtml = "<table><thead><tr><th>Sr. No.</th><th>Learner Name</th><th>Learner Code</th><th>BS-CIT</th><th>BS-CLS</th><th>BS-CSS</th><th>Present Student Sign</th></tr></thead><tbody>";
+
+                        // To keep track of learners and their exam slots
+                        const learnerData = {};
+
+                        results.data.forEach((row) => {
+                            const learnerCode = row['Learner Code'];
+                            const examSlot = row['Exam Slot'];
+                            const learnerName = row['Name'] || 'N/A';
+                            const course = row['Course'];
+
+                            // Initialize learner data if not already present
+                            if (!learnerData[learnerCode]) {
+                                learnerData[learnerCode] = {
+                                    name: learnerName,
+                                    learnerCode: learnerCode,
+                                    BS_CIT: '-',
+                                    BS_CLS: '-',
+                                    BS_CSS: '-'
+                                };
+                            }
+
+                            // Assign exam slots based on course
+                            if (course === 'BS-CIT') {
+                                learnerData[learnerCode].BS_CIT = examSlot || '-';
+                            } else if (course === 'BS-CLS') {
+                                learnerData[learnerCode].BS_CLS = examSlot || '-';
+                            } else if (course === 'BS-CSS') {
+                                learnerData[learnerCode].BS_CSS = examSlot || '-';
+                            }
+                        });
+
+                        // Render learner data to table with Sr. No.
+                        let serialNumber = 0;
+                        for (const learnerCode in learnerData) {
+                            const learner = learnerData[learnerCode];
+
+                            // Only display rows with valid exam slots (not '-')
+                            if (learner.BS_CIT !== '-' || learner.BS_CLS !== '-' || learner.BS_CSS !== '-') {
+                                serialNumber++;
+                                tableHtml += `<tr>
+                                    <td>${serialNumber}</td>
+                                    <td>${learner.name}</td>
+                                    <td>${learner.learnerCode}</td>
+                                    <td>${learner.BS_CIT !== '-' ? learner.BS_CIT : ''}</td>
+                                    <td>${learner.BS_CLS !== '-' ? learner.BS_CLS : ''}</td>
+                                    <td>${learner.BS_CSS !== '-' ? learner.BS_CSS : ''}</td>
+                                    <td></td> <!-- Empty cell for Present Student Sign -->
+                                </tr>`;
+                            }
+                        }
+
+                        tableHtml += "</tbody></table>";
+                        document.getElementById("result").innerHTML = tableHtml;
+                    },
+                    error: function(error) {
+                        console.error("Error parsing CSV file:", error);
+                        alert("There was an error parsing the CSV file.");
+                    }
+                });
+            } catch (err) {
+                console.error(err);
+                document.getElementById("result").textContent = "Error uploading file";
+            }
+        });
+
 // Print functionality
 document.getElementById("printButton").addEventListener("click", function () {
     const printContent = document.getElementById("result").innerHTML;
@@ -15,7 +280,7 @@ document.getElementById("printButton").addEventListener("click", function () {
     // Ensuring the borders for Sr. No and Present Student Sign are same as the rest
     printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
     printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
-    
+
     // Increase the width of the Present Student Sign column more
     printWindow.document.write('td:last-child { width: 350px; }'); // Increased width for Present Student Sign column
     
@@ -72,3 +337,6 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.close();
     printWindow.print();
 });
+
+</body>
+</html>
