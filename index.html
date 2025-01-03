@@ -281,7 +281,9 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
     printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
     
-    printWindow.document.write('td:last-child { width: 200px; }'); // Increase the width of the Present Student Sign column
+    // Increase the width of the Present Student Sign column
+    printWindow.document.write('td:last-child { width: 250px; }'); // Adjusted width for Present Student Sign column
+    
     printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
     printWindow.document.write('</style>');
     printWindow.document.write('</head><body>');
