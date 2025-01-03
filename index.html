@@ -310,8 +310,10 @@ document.getElementById("printButton").addEventListener("click", function () {
                 if (bsClsCell) bsClsCell.innerHTML = formattedData(bsClsCell.innerHTML);
                 if (bsCssCell) bsCssCell.innerHTML = formattedData(bsCssCell.innerHTML);
             });
-      
-       // Add a dark border for the whole table in dark mode
+        </script>
+    `);
+
+    // Add a dark border for the whole table
     printWindow.document.write('table { border: 3px solid #000; }');
     printWindow.document.write('th, td { border: 3px solid #000; }');
 
@@ -335,6 +337,6 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.close();
     printWindow.print();
 });
- </script>
+
 </body>
 </html>
