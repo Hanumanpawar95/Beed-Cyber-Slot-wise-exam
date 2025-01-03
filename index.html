@@ -281,13 +281,20 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
     printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
     
-    // Increase the width of the Present Student Sign column
-    printWindow.document.write('td:last-child { width: 250px; }'); // Adjusted width for Present Student Sign column
+    // Increase the width of the Present Student Sign column more
+    printWindow.document.write('td:last-child { width: 350px; }'); // Increased width for Present Student Sign column
     
     printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
     printWindow.document.write('</style>');
     printWindow.document.write('</head><body>');
     printWindow.document.write(printContent);
+    
+    // Remove any unwanted URL or unwanted content
+    const unwantedLink = printWindow.document.querySelector('a[href="https://hanumanpawar95.github.io/Beed-Cyber-Slot-wise-exam"]');
+    if (unwantedLink) {
+        unwantedLink.style.display = 'none'; // Hide the unwanted link
+    }
+
     printWindow.document.write('<footer>');
     printWindow.document.write('<p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>');
     printWindow.document.write('<p><em>This data is computer generated.</em></p>');
