@@ -262,7 +262,6 @@ th {
                 document.getElementById("result").textContent = "Error uploading file";
             }
         });
-
 // Print functionality
 document.getElementById("printButton").addEventListener("click", function () {
     const printContent = document.getElementById("result").innerHTML;
@@ -272,51 +271,18 @@ document.getElementById("printButton").addEventListener("click", function () {
     const printWindow = window.open('', '', 'height=500, width=800');
     printWindow.document.write('<html><head><title>Print Report</title>');
     printWindow.document.write('<style>');
-    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; background-color: white; color: black; }'); // White background and black text
-    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; border: 3px solid #000; }'); // Dark black border for table
-    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; vertical-align: middle; word-wrap: break-word; }'); // Dark black border for cells
+    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; border: 3px solid #000; }'); // Dark black border for table
+    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; vertical-align: middle; }'); // Dark black border for cells
     printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
     
-    // Ensuring the borders for Sr. No and Present Student Sign are same as the rest
+    // Adding border to the first and last column
     printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
     printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
     
     // Increase the width of the Present Student Sign column more
     printWindow.document.write('td:last-child { width: 350px; }'); // Increased width for Present Student Sign column
     
-    // Explicitly define width for BS-CIT, BS-CLS, BS-CSS columns
-    printWindow.document.write('td:nth-child(4), td:nth-child(5), td:nth-child(6) { width: 180px; }'); // Set width for BS-CIT, BS-CLS, BS-CSS columns
-
-    // Format the BS-CIT, BS-CLS, BS-CSS data like 2024-12-28-09:00:00-11:00:00
-    const formattedData = (data) => {
-        if (data) {
-            const date = new Date(data);
-            const startDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
-            const startTime = date.toTimeString().split(' ')[0]; // HH:MM:SS
-            return `${startDate}-${startTime}-${startTime}`;
-        }
-        return '';
-    };
-
-    // Apply the formatted data to the BS-CIT, BS-CLS, BS-CSS columns
-    printWindow.document.write(`
-        <script>
-            const rows = document.querySelectorAll('table tr');
-            rows.forEach(row => {
-                const bsCitCell = row.cells[3]; // 4th column
-                const bsClsCell = row.cells[4]; // 5th column
-                const bsCssCell = row.cells[5]; // 6th column
-                if (bsCitCell) bsCitCell.innerHTML = formattedData(bsCitCell.innerHTML);
-                if (bsClsCell) bsClsCell.innerHTML = formattedData(bsClsCell.innerHTML);
-                if (bsCssCell) bsCssCell.innerHTML = formattedData(bsCssCell.innerHTML);
-            });
-        </script>
-    `);
-
-    // Add a dark border for the whole table
-    printWindow.document.write('table { border: 3px solid #000; }');
-    printWindow.document.write('th, td { border: 3px solid #000; }');
-
     printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
     printWindow.document.write('</style>');
     printWindow.document.write('</head><body>');
@@ -337,6 +303,6 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.close();
     printWindow.print();
 });
-
+ </script>
 </body>
 </html>
