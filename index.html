@@ -272,12 +272,12 @@ document.getElementById("printButton").addEventListener("click", function () {
     const printWindow = window.open('', '', 'height=500, width=800');
     printWindow.document.write('<html><head><title>Print Report</title>');
     printWindow.document.write('<style>');
-    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; background-color: #2c2c2c; color: white; }');
-    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; border: 3px solid #000; }'); // Dark black border for table
+    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; background-color: white; color: black; }'); // White background and black text
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; border: 3px solid #000; }'); // Dark black border for table
     printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; vertical-align: middle; word-wrap: break-word; }'); // Dark black border for cells
     printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
     
-    // Adding border to the first and last column
+    // Ensuring the borders for Sr. No and Present Student Sign are same as the rest
     printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
     printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
     
@@ -310,8 +310,8 @@ document.getElementById("printButton").addEventListener("click", function () {
                 if (bsClsCell) bsClsCell.innerHTML = formattedData(bsClsCell.innerHTML);
                 if (bsCssCell) bsCssCell.innerHTML = formattedData(bsCssCell.innerHTML);
             });
-       
- // Add a dark border for the whole table in dark mode
+      
+       // Add a dark border for the whole table in dark mode
     printWindow.document.write('table { border: 3px solid #000; }');
     printWindow.document.write('th, td { border: 3px solid #000; }');
 
@@ -335,7 +335,6 @@ document.getElementById("printButton").addEventListener("click", function () {
     printWindow.document.close();
     printWindow.print();
 });
-
-  </script>
+ </script>
 </body>
 </html>
