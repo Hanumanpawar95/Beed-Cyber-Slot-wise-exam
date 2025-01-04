@@ -120,10 +120,6 @@
             background-color: #ffffff;
         }
 
-        td, th {
-            border: 3px solid #4CAF50;
-        }
-
         td:last-child {
             width: 180px; /* Increased width for Sign column */
         }
@@ -315,13 +311,13 @@
                             const examSlot = row['Exam Slot'];
                             const learnerName = row['Name'] || 'N/A';
                             const course = row['Course'];
-                            const batch = row['Batch'] || 'N/A';
+                            const batch = row['Batch'];
 
                             if (!learnerData[learnerCode]) {
                                 learnerData[learnerCode] = {
                                     name: learnerName,
-                                    learnerCode,
-                                    batch,
+                                    learnerCode: learnerCode,
+                                    batch: batch,
                                     BS_CIT: '-',
                                     BS_CLS: '-',
                                     BS_CSS: '-'
