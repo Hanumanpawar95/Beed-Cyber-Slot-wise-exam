@@ -1,154 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Learner Data</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .center {
-            text-align: center;
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-   </head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Upload and Print Report</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    input[type="text"], input[type="file"], button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    input[type="file"] {
+      padding: 5px;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+  </style>
+</head>
 <body>
-    <h1 class="center">Upload Learner CSV Data</h1>
-    <form id="uploadForm">
-        <label for="tableHeader">Enter Table Header Text:</label>
-        <input type="text" id="tableHeader" placeholder="Enter your table header" required>
-        <br><br>
-        <label for="csvFile">Select CSV File:</label>
-        <input type="file" id="csvFile" name="csvFile" accept=".csv">
-        <button type="submit">Upload and Process</button>
-    </form>
-    <div id="result"></div>
+  <div class="container">
+    <h1>CSV Upload and Report</h1>
 
-    <script>
-        document.getElementById("uploadForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const tableHeaderText = document.getElementById("tableHeader").value;
-            const file = document.getElementById("csvFile").files[0];
+    <!-- Input field for table headers -->
+    <label for="headers">Enter Table Headers (Comma-Separated):</label>
+    <input type="text" id="headers" placeholder="e.g., Name, Age, Department">
 
-            if (!tableHeaderText) {
-                alert('Please enter the table header text');
-                return;
-            }
+    <!-- File upload input -->
+    <label for="csvFile">Upload CSV File:</label>
+    <input type="file" id="csvFile" accept=".csv">
 
-            if (!file) {
-                alert('Please select a CSV file');
-                return;
-            }
+    <!-- Buttons -->
+    <div class="btn-container">
+      <button id="uploadButton">Upload and Display</button>
+      <button id="printButton">Print Report</button>
+    </div>
 
-            try {
-                Papa.parse(file, {
-                    header: true,
-                    skipEmptyLines: true,
-                    dynamicTyping: true,
-                    complete: function(results) {
-                        console.log(results.data);
+    <!-- Table to display data -->
+    <table id="dataTable">
+      <thead>
+        <tr id="tableHeaders"></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-                        let tableHtml = `<table>
-                            <thead>
-                                <tr>
-                                    <th colspan="8" style="text-align: center;">${tableHeaderText}</th>
-                                </tr>
-                                <tr>
-                                    <th>Sr. No.</th>
-                                    <th>Learner Name</th>
-                                    <th>Learner Code</th>
-                                    <th>Batch</th>
-                                    <th>BS-CIT</th>
-                                    <th>BS-CLS</th>
-                                    <th>BS-CSS</th>
-                                    <th>Present Student Sign</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
+  <script>
+    // Reference to elements
+    const headersInput = document.getElementById("headers");
+    const csvFileInput = document.getElementById("csvFile");
+    const uploadButton = document.getElementById("uploadButton");
+    const printButton = document.getElementById("printButton");
+    const tableHeaders = document.getElementById("tableHeaders");
+    const tableBody = document.querySelector("#dataTable tbody");
 
-                        const learnerData = {};
+    // Function to display the CSV data
+    function displayCSVData(data) {
+      // Clear previous table rows
+      tableBody.innerHTML = "";
 
-                        results.data.forEach((row) => {
-                            const learnerCode = row['Learner Code'];
-                            const examSlot = row['Exam Slot'];
-                            const learnerName = row['Name'] || 'N/A';
-                            const course = row['Course'];
-                            const batch = row['Batch'] || 'N/A';
-
-                            if (!learnerData[learnerCode]) {
-                                learnerData[learnerCode] = {
-                                    name: learnerName,
-                                    learnerCode: learnerCode,
-                                    batch: batch,
-                                    BS_CIT: '-',
-                                    BS_CLS: '-',
-                                    BS_CSS: '-'
-                                };
-                            }
-
-                            if (course === 'BS-CIT') {
-                                learnerData[learnerCode].BS_CIT = examSlot || '-';
-                            } else if (course === 'BS-CLS') {
-                                learnerData[learnerCode].BS_CLS = examSlot || '-';
-                            } else if (course === 'BS-CSS') {
-                                learnerData[learnerCode].BS_CSS = examSlot || '-';
-                            }
-                        });
-
-                        let serialNumber = 0;
-                        for (const learnerCode in learnerData) {
-                            const learner = learnerData[learnerCode];
-
-                            if (learner.BS_CIT !== '-' || learner.BS_CLS !== '-' || learner.BS_CSS !== '-') {
-                                serialNumber++;
-                                tableHtml += `<tr>
-                                    <td>${serialNumber}</td>
-                                    <td>${learner.name}</td>
-                                    <td>${learner.learnerCode}</td>
-                                    <td>${learner.batch}</td>
-                                    <td>${learner.BS_CIT !== '-' ? learner.BS_CIT : ''}</td>
-                                    <td>${learner.BS_CLS !== '-' ? learner.BS_CLS : ''}</td>
-                                    <td>${learner.BS_CSS !== '-' ? learner.BS_CSS : ''}</td>
-                                    <td></td>
-                                </tr>`;
-                            }
-                        }
-
-                        tableHtml += "</tbody></table>";
-                        document.getElementById("result").innerHTML = tableHtml;
-                    },
-                    error: function(error) {
-                        console.error("Error parsing CSV file:", error);
-                        alert("There was an error parsing the CSV file.");
-                    }
-                });
-            } catch (err) {
-                console.error(err);
-                document.getElementById("result").textContent = "Error uploading file";
-            }
+      // Add rows to the table
+      data.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((cell) => {
+          const td = document.createElement("td");
+          td.textContent = cell;
+          tr.appendChild(td);
         });
-    </script>
+        tableBody.appendChild(tr);
+      });
+    }
+
+    // Event listener for Upload button
+    uploadButton.addEventListener("click", () => {
+      const file = csvFileInput.files[0];
+
+      if (!file) {
+        alert("Please upload a CSV file.");
+        return;
+      }
+
+      // Set table headers
+      const headers = headersInput.value.split(",").map((header) => header.trim());
+      tableHeaders.innerHTML = ""; // Clear previous headers
+      headers.forEach((header) => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        tableHeaders.appendChild(th);
+      });
+
+      // Parse the CSV file
+      Papa.parse(file, {
+        complete: (result) => {
+          displayCSVData(result.data);
+        },
+        error: (error) => {
+          console.error("Error parsing CSV:", error);
+          alert("Error parsing CSV file.");
+        },
+      });
+    });
+
+    // Event listener for Print button
+    printButton.addEventListener("click", () => {
+      const originalContent = document.body.innerHTML;
+      const printContent = document.querySelector(".container").innerHTML;
+
+      document.body.innerHTML = printContent;
+      window.print();
+      document.body.innerHTML = originalContent;
+      window.location.reload(); // Reload to restore functionality
+    });
+  </script>
 </body>
 </html>
