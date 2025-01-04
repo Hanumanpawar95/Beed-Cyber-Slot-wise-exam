@@ -329,16 +329,17 @@
                             if (course === 'BS-CSS') learnerData[learnerCode].BS_CSS = examSlot || '-';
                         });
 
+                        let srNo = 1;
                         for (const learnerCode in learnerData) {
                             tableHtml += `<tr>
-                                <td>${learnerCode}</td>
+                                <td>${srNo++}</td>
                                 <td>${learnerData[learnerCode].name}</td>
                                 <td>${learnerData[learnerCode].learnerCode}</td>
                                 <td>${learnerData[learnerCode].batch}</td>
                                 <td>${learnerData[learnerCode].BS_CIT}</td>
                                 <td>${learnerData[learnerCode].BS_CLS}</td>
                                 <td>${learnerData[learnerCode].BS_CSS}</td>
-                                <td>Signature</td>
+                                <td></td> <!-- Removed Signature text -->
                             </tr>`;
                         }
 
