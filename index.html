@@ -4,83 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Learner Data</title>
-    <style>
+   <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
+
         h1 {
             text-align: center;
             color: #333;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        form input[type="text"], form input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        form button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        form button:hover {
-            background-color: #218838;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
             margin-top: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-top: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
             background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        tr:nth-child(even) {
+
+       table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: 3px solid #000; /* Dark black border for table */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border: 3px solid #000; /* Dark black border for cells */
+}
+
+th {
+    background-color: #FF5733;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+     tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
         tr:hover {
             background-color: #f1f1f1;
         }
-        .center {
-            text-align: center;
+
+        td {
+            color: #555;
+            font-size: 16px;
         }
-        #printButton {
-            margin: 20px 0;
-            display: block;
-            background-color: #007bff;
+
+        button {
+            background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
+            padding: 10px 20px;
+            margin: 20px auto;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            text-align: center;
+            display: block;
+            width: 200px;
+            border-radius: 5px;
         }
-        #printButton:hover {
-            background-color: #0056b3;
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .upload-form {
+            margin-top: 20px;
+        }
+
+        .upload-form input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-label {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .upload-form button {
+            background-color: #FF5733;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .upload-form button:hover {
+            background-color: #e84c31;
+        }
+
+        #result {
+            margin-top: 30px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
