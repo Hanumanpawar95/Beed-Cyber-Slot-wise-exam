@@ -87,6 +87,11 @@
             background-color: #ffffff;
         }
 
+        /* Adjust width of 'Sign' column */
+        td:last-child, th:last-child {
+            width: 150px; /* Increased width for 'Sign' column */
+        }
+
         footer {
             text-align: center;
             margin-top: 30px;
@@ -262,11 +267,14 @@
                             td {
                                 background-color: #ffffff;
                             }
+
+                            /* Adjust width of 'Sign' column */
+                            td:last-child, th:last-child {
+                                width: 150px; /* Increased width for 'Sign' column */
+                            }
                         </style>
                     </head>
                     <body>
-                        <h1>CSV Learner Data</h1>
-                        <h2>Final Exam Slot Wise</h2>
                         ${printContent}
                     </body>
                 </html>
