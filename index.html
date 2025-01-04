@@ -101,13 +101,11 @@
             margin: 30px auto;
             font-size: 1rem;
             text-align: center;
-            background-color: #fff;
         }
 
         th, td {
-            padding: 12px 15px;
-            border: 3px solid #4CAF50; /* Bold border */
-            text-align: center;
+            border: 2px solid #4CAF50;
+            padding: 12px;
         }
 
         th {
@@ -120,12 +118,8 @@
             background-color: #ffffff;
         }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
+        td, th {
+            border: 3px solid #4CAF50;
         }
 
         footer {
@@ -138,6 +132,28 @@
         footer a {
             color: #4CAF50;
             text-decoration: none;
+        }
+
+        #printButton {
+            display: none;
+            background-color: #FF5733;
+            color: white;
+            padding: 12px 25px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 200px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        #printButton:hover {
+            background-color: #e04e1c;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
     <!-- Include PapaParse Library -->
@@ -158,16 +174,20 @@
             <button type="button" id="processButton">Upload and Process</button>
         </form>
 
-          <!-- Result Section -->
-        <div id="result"></div>
+        <div id="result">
+            <!-- Table will be dynamically inserted here -->
+        </div>
+
+        <button id="printButton">Print Report</button>
     </div>
-   <footer>
+
+    <footer>
         <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
         <p><em>This data is computer generated.</em></p>
     </footer>
-     <script>
-        document.getElementById("uploadForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
+
+    <script>
+        document.getElementById("processButton").addEventListener("click", function() {
             const tableHeaderText = document.getElementById("tableHeader").value;
             const file = document.getElementById("csvFile").files[0];
 
@@ -250,6 +270,7 @@
 
                         tableHtml += "</tbody></table>";
                         document.getElementById("result").innerHTML = tableHtml;
+                        document.getElementById("printButton").style.display = "block";
                     },
                     error: function(error) {
                         alert("Error parsing CSV file.");
@@ -258,6 +279,14 @@
             } catch (err) {
                 alert("Error uploading file.");
             }
+        });
+
+        document.getElementById("printButton").addEventListener("click", () => {
+            const printContent = document.getElementById("result").innerHTML;
+            const printWindow = window.open("", "", "width=800,height=600");
+            printWindow.document.write(`<html><head><title>Print Report</title></head><body>${printContent}</body></html>`);
+            printWindow.document.close();
+            printWindow.print();
         });
     </script>
 </body>
