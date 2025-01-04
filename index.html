@@ -122,6 +122,10 @@
             border: 3px solid #4CAF50;
         }
 
+        td:last-child {
+            width: 180px; /* Increased width for Sign column */
+        }
+
         footer {
             text-align: center;
             margin-top: 50px;
@@ -154,6 +158,29 @@
         #printButton:hover {
             background-color: #e04e1c;
             box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #result, #result * {
+                visibility: visible;
+            }
+
+            #printButton {
+                display: none;
+            }
+
+            table {
+                width: 100%;
+                font-size: 1.2rem;
+            }
+
+            td, th {
+                padding: 15px;
+            }
         }
     </style>
     <!-- Include PapaParse Library -->
@@ -284,7 +311,44 @@
         document.getElementById("printButton").addEventListener("click", () => {
             const printContent = document.getElementById("result").innerHTML;
             const printWindow = window.open("", "", "width=800,height=600");
-            printWindow.document.write(`<html><head><title>Print Report</title></head><body>${printContent}</body></html>`);
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Report</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f4f4f4;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin: 30px auto;
+                                font-size: 1.2rem;
+                                text-align: center;
+                            }
+                            td, th {
+                                border: 2px solid #4CAF50;
+                                padding: 15px;
+                            }
+                            th {
+                                background-color: #FF5733;
+                                color: white;
+                                font-weight: bold;
+                            }
+                            td {
+                                background-color: #ffffff;
+                            }
+                            td:last-child {
+                                width: 180px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent}
+                    </body>
+                </html>
+            `);
             printWindow.document.close();
             printWindow.print();
         });
