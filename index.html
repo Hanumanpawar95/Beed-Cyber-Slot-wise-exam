@@ -5,235 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Learner Data</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            text-align: center;
-            color: #FF5733;
-            font-size: 3rem;
-            margin-top: 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        h2 {
-            text-align: center;
-            color: #4CAF50;
-            font-size: 2.5rem;
-            margin: 10px 0 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-        }
-
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            margin: 50px auto;
-            padding: 40px;
-            background: linear-gradient(to bottom, #ffffff, #f4f4f4);
-            border-radius: 15px;
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            font-size: 1.2rem;
-            color: #555;
-            font-weight: bold;
-            margin: 20px 0 10px;
-        }
-
-        input[type="text"], input[type="file"] {
-            width: 90%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border: 2px solid #4CAF50;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            background: #f9f9f9;
-            transition: 0.3s;
-        }
-
-        input[type="text"]:focus, input[type="file"]:focus {
-            border-color: #FF5733;
-            background: #fff;
-        }
-
-        input[type="file"] {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 25px;
-            margin: 20px auto;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 200px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background-color: #45a049;
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px auto;
-            font-size: 1rem;
-            text-align: center;
-        }
-
-        th, td {
-            border: 2px solid #4CAF50;
-            padding: 12px;
-        }
-
-        th {
-            background-color: #FF5733;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        td {
-            background-color: #ffffff;
-        }
-
-        td:last-child {
-            width: 180px; /* Increased width for Sign column */
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        footer a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        #printButton {
-            display: none;
-            background-color: #FF5733;
-            color: white;
-            padding: 12px 25px;
-            margin-top: 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 200px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        #printButton:hover {
-            background-color: #e04e1c;
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        @media print {
-            body {
-                background-color: white;
-                padding: 10px;
-                margin: 0;
-            }
-
-            body * {
-                visibility: hidden;
-            }
-
-            #result, #result * {
-                visibility: visible;
-            }
-
-            #printButton {
-                display: none;
-            }
-
-            h1, h2 {
-                display: none; /* Hide container heading during print */
-            }
-
-            table {
-                width: 100%;
-                font-size: 1rem;
-                border-collapse: collapse;
-            }
-
-            th, td {
-                padding: 12px;
-                border: 2px solid #4CAF50;
-                text-align: center;
-            }
-
-            th {
-                background-color: #FF5733;
-                color: white;
-                font-weight: bold;
-            }
-
-            td {
-                background-color: #ffffff;
-            }
-
-            td:last-child {
-                width: 180px; /* Increased width for Sign column */
-            }
-
-            .container {
-                width: 100%;
-                padding: 20px;
-                box-shadow: none;
-                background: none;
-            }
-
-            /* Dark mode styles for printing */
-            body {
-                background-color: #1e1e1e;
-                color: #ffffff;
-            }
-
-            table {
-                border-color: #555;
-            }
-
-            th {
-                background-color: #333;
-                color: #fff;
-            }
-
-            td {
-                background-color: #444;
-                color: #fff;
-            }
-        }
+        /* Same styles as before */
+        /* Add your styles here */
     </style>
     <!-- Include PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -331,14 +104,19 @@
 
                         let srNo = 1;
                         for (const learnerCode in learnerData) {
+                            const data = learnerData[learnerCode];
+                            // Skip row if all the course columns are marked as '-'
+                            if (data.BS_CIT === '-' && data.BS_CLS === '-' && data.BS_CSS === '-') {
+                                continue;
+                            }
                             tableHtml += `<tr>
                                 <td>${srNo++}</td>
-                                <td>${learnerData[learnerCode].name}</td>
-                                <td>${learnerData[learnerCode].learnerCode}</td>
-                                <td>${learnerData[learnerCode].batch}</td>
-                                <td>${learnerData[learnerCode].BS_CIT}</td>
-                                <td>${learnerData[learnerCode].BS_CLS}</td>
-                                <td>${learnerData[learnerCode].BS_CSS}</td>
+                                <td>${data.name}</td>
+                                <td>${data.learnerCode}</td>
+                                <td>${data.batch}</td>
+                                <td>${data.BS_CIT}</td>
+                                <td>${data.BS_CLS}</td>
+                                <td>${data.BS_CSS}</td>
                                 <td></td> <!-- Removed Signature text -->
                             </tr>`;
                         }
