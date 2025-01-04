@@ -148,7 +148,9 @@ th {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body>
-    <h1>Upload Learner CSV Data</h1>
+    <div class="container">
+        <h1>Beed Cyber Infotech KYP</h1>
+        <h2>Final Exam Slot Wise</h2>
     <form id="uploadForm">
         <label for="tableHeader">Enter Table Header Text:</label>
         <input type="text" id="tableHeader" placeholder="Enter your table header" required>
@@ -157,7 +159,15 @@ th {
         <button type="submit">Upload and Process</button>
     </form>
     <div id="result"></div>
-    <button id="printButton" style="display:none;">Print Report</button>
+      <!-- Print Button -->
+        <button id="printButton">Print Report</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
+        <p><em>This data is computer generated.</em></p>
+    </footer>
 
     <script>
         document.getElementById("uploadForm").addEventListener("submit", async (event) => {
@@ -273,6 +283,43 @@ th {
             document.body.innerHTML = originalContent;
             location.reload();
         });
+        // Print functionality
+document.getElementById("printButton").addEventListener("click", function () {
+    let printContent = document.getElementById("result").innerHTML;
+
+    // Remove the unwanted URL from the print content
+    printContent = printContent.replace(
+        /<a[^>]*href="https:\/\/hanumanpawar95\.github\.io\/Beed-Cyber-Slot-wise-exam\/"[^>]*>.*?<\/a>/g,
+        ''
+    );
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString(); // Localized date format
+
+    const printWindow = window.open('', '', 'height=500, width=800');
+    printWindow.document.write('<html><head><title>Print Report</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; border: 3px solid #000; }'); // Dark black border for table
+    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; vertical-align: middle; }'); // Dark black border for cells
+    printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
+    printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
+    printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
+    printWindow.document.write('td:last-child { width: 450px; }'); // Increased width for Present Student Sign column
+    printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
+    printWindow.document.write('</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent);
+
+    printWindow.document.write('<footer>');
+    printWindow.document.write('<p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>');
+    printWindow.document.write('<p><em>This data is computer generated.</em></p>');
+    printWindow.document.write('<p><strong>Report Date & Time: ' + formattedDate + '</strong></p>');
+    printWindow.document.write('</footer>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+});
     </script>
 </body>
 </html>
