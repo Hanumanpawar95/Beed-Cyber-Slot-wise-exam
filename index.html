@@ -35,7 +35,7 @@
         }
 
         .container {
-            max-width: 1200px;  /* Increased maximum width */
+            max-width: 1200px;
             width: 100%;
             margin: 50px auto;
             padding: 40px;
@@ -162,6 +162,12 @@
         }
 
         @media print {
+            body {
+                background-color: white;
+                padding: 10px;
+                margin: 0;
+            }
+
             body * {
                 visibility: hidden;
             }
@@ -176,11 +182,35 @@
 
             table {
                 width: 100%;
-                font-size: 1.2rem;
+                font-size: 1rem;
+                border-collapse: collapse;
             }
 
-            td, th {
-                padding: 15px;
+            th, td {
+                padding: 12px;
+                border: 2px solid #4CAF50;
+                text-align: left;
+            }
+
+            th {
+                background-color: #FF5733;
+                color: white;
+                font-weight: bold;
+            }
+
+            td {
+                background-color: #ffffff;
+            }
+
+            td:last-child {
+                width: 180px; /* Increased width for Sign column */
+            }
+
+            .container {
+                width: 100%;
+                padding: 20px;
+                box-shadow: none;
+                background: none;
             }
         }
     </style>
@@ -309,9 +339,9 @@
             }
         });
 
-        document.getElementById("printButton").addEventListener("click", () => {
+        document.getElementById("printButton").addEventListener("click", function() {
             const printContent = document.getElementById("result").innerHTML;
-            const printWindow = window.open("", "", "width=800,height=600");
+            const printWindow = window.open('', '', 'height=700,width=700');
             printWindow.document.write(`
                 <html>
                     <head>
@@ -334,7 +364,7 @@
                                 text-align: left;
                             }
                             th {
-                                background-color: #4CAF50;
+                                background-color: #FF5733;
                                 color: white;
                             }
                             td {
