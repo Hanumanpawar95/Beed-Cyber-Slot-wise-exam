@@ -4,60 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Learner Data</title>
-    <style>
+   <style>
         body {
-            font-family: "Poppins", Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f4f8;
-            color: #333;
-        }
-
-        h1, h2 {
-            text-align: center;
-            margin: 0;
+            background-color: #f4f4f4;
         }
 
         h1 {
-            color: #0056b3;
-            margin-top: 20px;
+            text-align: center;
+            color: #FF5733;
             font-size: 2.5rem;
+            margin-top: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         h2 {
-            color: #0288d1;
-            font-size: 1.8rem;
+            text-align: center;
+            color: #4CAF50;
+            font-size: 2rem;
+            margin: 10px 0 30px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 30px;
+            background: linear-gradient(to bottom, #ffffff, #f4f4f4);
+            border-radius: 15px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
         table {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 30px;
             border-collapse: collapse;
-            border: 1px solid #ddd;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border: 3px solid #000;
+            border-radius: 8px;
             overflow: hidden;
         }
 
         th, td {
-            padding: 12px 15px;
-            text-align: center;
-            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+            border: 3px solid #000;
         }
 
         th {
-            background-color: #0288d1;
+            background-color: #FF5733;
             color: white;
-            font-weight: 600;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
@@ -70,61 +72,83 @@
         }
 
         tr:hover {
-            background-color: #eef3f8;
+            background-color: #f1f1f1;
         }
 
         td {
-            color: #444;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 25px;
-            margin: 20px 10px;
+            color: #555;
             font-size: 16px;
-            text-transform: uppercase;
-            font-weight: bold;
-            color: #fff;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
         }
 
-        .btn:hover {
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px auto;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 200px;
+            border-radius: 5px;
+        }
+
+        button:hover {
             background-color: #45a049;
         }
 
-        .upload-form label {
-            display: block;
-            margin-bottom: 8px;
+        .upload-form {
+            margin-top: 20px;
+        }
+
+        .upload-form input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-label {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            text-transform: uppercase;
             font-weight: bold;
         }
 
-        .upload-form input[type="text"],
-        .upload-form input[type="file"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
+        .upload-form button {
+            background-color: #FF5733;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
             border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .upload-form button:hover {
+            background-color: #e84c31;
+        }
+
+        #result {
+            margin-top: 30px;
         }
 
         footer {
             text-align: center;
-            margin-top: 40px;
-            font-size: 0.9rem;
-            color: #666;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #888;
         }
 
         footer a {
-            color: #0288d1;
+            color: #4CAF50;
             text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
@@ -133,23 +157,24 @@
     <div class="container">
         <h1>Beed Cyber Infotech KYP</h1>
         <h2>Final Exam Slot Wise</h2>
-        <form id="uploadForm" class="upload-form">
-            <label for="tableHeader">Enter Table Header Text:</label>
-            <input type="text" id="tableHeader" placeholder="Enter your table header" required>
-            <label for="csvFile">Select CSV File:</label>
-            <input type="file" id="csvFile" name="csvFile" accept=".csv">
-            <button type="submit" class="btn">Upload and Process</button>
-        </form>
-        <div id="result"></div>
-        <button id="printButton" class="btn" style="display: none;">Print Report</button>
+    <form id="uploadForm">
+        <label for="tableHeader">Enter Table Header Text:</label>
+        <input type="text" id="tableHeader" placeholder="Enter your table header" required>
+        <label for="csvFile">Select CSV File:</label>
+        <input type="file" id="csvFile" name="csvFile" accept=".csv">
+        <button type="submit">Upload and Process</button>
+    </form>
+    <div id="result"></div>
+      <!-- Print Button -->
+        <button id="printButton">Print Report</button>
     </div>
 
+    <!-- Footer -->
     <footer>
-        <p>Page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
-        <p><em>All data is computer-generated.</em></p>
+        <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
+        <p><em>This data is computer generated.</em></p>
     </footer>
-
-    <script>
+  <script>
         document.getElementById("uploadForm").addEventListener("submit", async (event) => {
             event.preventDefault();
             const tableHeaderText = document.getElementById("tableHeader").value;
