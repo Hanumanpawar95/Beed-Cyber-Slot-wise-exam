@@ -101,11 +101,13 @@
             margin: 30px auto;
             font-size: 1rem;
             text-align: center;
+            background-color: #fff;
         }
 
         th, td {
-            border: 2px solid #4CAF50;
-            padding: 10px;
+            padding: 12px 15px;
+            border: 3px solid #4CAF50; /* Bold border */
+            text-align: center;
         }
 
         th {
@@ -116,6 +118,14 @@
 
         td {
             background-color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
         }
 
         footer {
@@ -157,7 +167,8 @@
         <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
         <p><em>This data is computer generated.</em></p>
     </footer>
-  <script>
+
+    <script>
         document.getElementById("uploadForm").addEventListener("submit", async (event) => {
             event.preventDefault();
             const tableHeaderText = document.getElementById("tableHeader").value;
@@ -242,7 +253,6 @@
 
                         tableHtml += "</tbody></table>";
                         document.getElementById("result").innerHTML = tableHtml;
-                        document.getElementById("printButton").style.display = "block";
                     },
                     error: function(error) {
                         alert("Error parsing CSV file.");
@@ -251,14 +261,6 @@
             } catch (err) {
                 alert("Error uploading file.");
             }
-        });
-
-        document.getElementById("printButton").addEventListener("click", () => {
-            const printContent = document.getElementById("result").innerHTML;
-            const printWindow = window.open("", "", "width=800,height=600");
-            printWindow.document.write(`<html><head><title>Print Report</title></head><body>${printContent}</body></html>`);
-            printWindow.document.close();
-            printWindow.print();
         });
     </script>
 </body>
