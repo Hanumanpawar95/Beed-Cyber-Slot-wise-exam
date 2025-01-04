@@ -113,6 +113,7 @@
             background-color: #FF5733;
             color: white;
             font-weight: bold;
+            text-align: center;
         }
 
         td {
@@ -180,6 +181,10 @@
                 display: none;
             }
 
+            h1, h2 {
+                display: none; /* Hide container heading during print */
+            }
+
             table {
                 width: 100%;
                 font-size: 1rem;
@@ -189,7 +194,7 @@
             th, td {
                 padding: 12px;
                 border: 2px solid #4CAF50;
-                text-align: left;
+                text-align: center;
             }
 
             th {
@@ -211,6 +216,26 @@
                 padding: 20px;
                 box-shadow: none;
                 background: none;
+            }
+
+            /* Dark mode styles for printing */
+            body {
+                background-color: #1e1e1e;
+                color: #ffffff;
+            }
+
+            table {
+                border-color: #555;
+            }
+
+            th {
+                background-color: #333;
+                color: #fff;
+            }
+
+            td {
+                background-color: #444;
+                color: #fff;
             }
         }
     </style>
@@ -308,34 +333,30 @@
                             if (course === 'BS-CSS') learnerData[learnerCode].BS_CSS = examSlot || '-';
                         });
 
-                        let serialNumber = 0;
                         for (const learnerCode in learnerData) {
-                            const learner = learnerData[learnerCode];
-                            if (learner.BS_CIT !== '-' || learner.BS_CLS !== '-' || learner.BS_CSS !== '-') {
-                                serialNumber++;
-                                tableHtml += `<tr>
-                                    <td>${serialNumber}</td>
-                                    <td>${learner.name}</td>
-                                    <td>${learner.learnerCode}</td>
-                                    <td>${learner.batch}</td>
-                                    <td>${learner.BS_CIT}</td>
-                                    <td>${learner.BS_CLS}</td>
-                                    <td>${learner.BS_CSS}</td>
-                                    <td></td>
-                                </tr>`;
-                            }
+                            tableHtml += `<tr>
+                                <td>${learnerCode}</td>
+                                <td>${learnerData[learnerCode].name}</td>
+                                <td>${learnerData[learnerCode].learnerCode}</td>
+                                <td>${learnerData[learnerCode].batch}</td>
+                                <td>${learnerData[learnerCode].BS_CIT}</td>
+                                <td>${learnerData[learnerCode].BS_CLS}</td>
+                                <td>${learnerData[learnerCode].BS_CSS}</td>
+                                <td>Signature</td>
+                            </tr>`;
                         }
 
-                        tableHtml += "</tbody></table>";
+                        tableHtml += `</tbody></table>`;
+
                         document.getElementById("result").innerHTML = tableHtml;
                         document.getElementById("printButton").style.display = "block";
                     },
                     error: function(error) {
-                        alert("Error parsing CSV file.");
+                        alert('Error processing file');
                     }
                 });
-            } catch (err) {
-                alert("Error uploading file.");
+            } catch (e) {
+                alert('Error reading file');
             }
         });
 
@@ -361,7 +382,7 @@
                             th, td {
                                 padding: 12px;
                                 border: 1px solid #ddd;
-                                text-align: left;
+                                text-align: center;
                             }
                             th {
                                 background-color: #FF5733;
