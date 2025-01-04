@@ -4,60 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Learner Data</title>
-   <style>
+    <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin: 0;
         }
 
         h1 {
-            text-align: center;
-            color: #333;
+            color: #0056b3;
             margin-top: 20px;
+            font-size: 2.5rem;
         }
 
         h2 {
-            text-align: center;
-            color: #4CAF50;
-            margin-top: 0;
+            color: #0288d1;
+            font-size: 1.8rem;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 50px auto;
+            max-width: 1100px;
+            margin: 30px auto;
             padding: 20px;
-            background-color: #fff;
+            background: #fff;
             border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
             text-align: center;
         }
 
-       table {
-    width: 100%;
-    margin-top: 30px;
-    border-collapse: collapse;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    border: 3px solid #000; /* Dark black border for table */
-    border-radius: 8px;
-    overflow: hidden;
-}
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
-th, td {
-    padding: 15px;
-    text-align: left;
-    border: 3px solid #000; /* Dark black border for cells */
-}
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
 
-th {
-    background-color: #FF5733;
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+        th {
+            background-color: #0288d1;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
-     tr:nth-child(even) {
+        tr:nth-child(even) {
             background-color: #f9f9f9;
         }
 
@@ -66,83 +70,61 @@ th {
         }
 
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #eef3f8;
         }
 
         td {
-            color: #555;
-            font-size: 16px;
+            color: #444;
         }
 
-        button {
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            margin: 20px 10px;
+            font-size: 16px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #fff;
             background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin: 20px auto;
             border: none;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 200px;
             border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
         }
 
-        button:hover {
+        .btn:hover {
             background-color: #45a049;
         }
 
-        .upload-form {
-            margin-top: 20px;
+        .upload-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
 
+        .upload-form input[type="text"],
         .upload-form input[type="file"] {
-            display: none;
-        }
-
-        .custom-file-label {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            border: none;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .upload-form button {
-            background-color: #FF5733;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .upload-form button:hover {
-            background-color: #e84c31;
-        }
-
-        #result {
-            margin-top: 30px;
         }
 
         footer {
             text-align: center;
-            margin-top: 50px;
-            font-size: 14px;
-            color: #888;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #666;
         }
 
         footer a {
-            color: #4CAF50;
+            color: #0288d1;
             text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
@@ -151,22 +133,20 @@ th {
     <div class="container">
         <h1>Beed Cyber Infotech KYP</h1>
         <h2>Final Exam Slot Wise</h2>
-    <form id="uploadForm">
-        <label for="tableHeader">Enter Table Header Text:</label>
-        <input type="text" id="tableHeader" placeholder="Enter your table header" required>
-        <label for="csvFile">Select CSV File:</label>
-        <input type="file" id="csvFile" name="csvFile" accept=".csv">
-        <button type="submit">Upload and Process</button>
-    </form>
-    <div id="result"></div>
-      <!-- Print Button -->
-        <button id="printButton">Print Report</button>
+        <form id="uploadForm" class="upload-form">
+            <label for="tableHeader">Enter Table Header Text:</label>
+            <input type="text" id="tableHeader" placeholder="Enter your table header" required>
+            <label for="csvFile">Select CSV File:</label>
+            <input type="file" id="csvFile" name="csvFile" accept=".csv">
+            <button type="submit" class="btn">Upload and Process</button>
+        </form>
+        <div id="result"></div>
+        <button id="printButton" class="btn" style="display: none;">Print Report</button>
     </div>
 
-    <!-- Footer -->
     <footer>
-        <p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
-        <p><em>This data is computer generated.</em></p>
+        <p>Page developed by <strong>Mr. Hanuman Pawar</strong>.</p>
+        <p><em>All data is computer-generated.</em></p>
     </footer>
 
     <script>
@@ -192,11 +172,10 @@ th {
                     dynamicTyping: true,
                     complete: function(results) {
                         console.log(results.data);
-
                         let tableHtml = `<table>
                             <thead>
                                 <tr>
-                                    <th colspan="8" style="text-align: center;">${tableHeaderText}</th>
+                                    <th colspan="8">${tableHeaderText}</th>
                                 </tr>
                                 <tr>
                                     <th>Sr. No.</th>
@@ -206,13 +185,12 @@ th {
                                     <th>BS-CIT</th>
                                     <th>BS-CLS</th>
                                     <th>BS-CSS</th>
-                                    <th>Present Student Sign</th>
+                                    <th>Sign</th>
                                 </tr>
                             </thead>
                             <tbody>`;
 
                         const learnerData = {};
-
                         results.data.forEach((row) => {
                             const learnerCode = row['Learner Code'];
                             const examSlot = row['Exam Slot'];
@@ -223,27 +201,22 @@ th {
                             if (!learnerData[learnerCode]) {
                                 learnerData[learnerCode] = {
                                     name: learnerName,
-                                    learnerCode: learnerCode,
-                                    batch: batch,
+                                    learnerCode,
+                                    batch,
                                     BS_CIT: '-',
                                     BS_CLS: '-',
                                     BS_CSS: '-'
                                 };
                             }
 
-                            if (course === 'BS-CIT') {
-                                learnerData[learnerCode].BS_CIT = examSlot || '-';
-                            } else if (course === 'BS-CLS') {
-                                learnerData[learnerCode].BS_CLS = examSlot || '-';
-                            } else if (course === 'BS-CSS') {
-                                learnerData[learnerCode].BS_CSS = examSlot || '-';
-                            }
+                            if (course === 'BS-CIT') learnerData[learnerCode].BS_CIT = examSlot || '-';
+                            if (course === 'BS-CLS') learnerData[learnerCode].BS_CLS = examSlot || '-';
+                            if (course === 'BS-CSS') learnerData[learnerCode].BS_CSS = examSlot || '-';
                         });
 
                         let serialNumber = 0;
                         for (const learnerCode in learnerData) {
                             const learner = learnerData[learnerCode];
-
                             if (learner.BS_CIT !== '-' || learner.BS_CLS !== '-' || learner.BS_CSS !== '-') {
                                 serialNumber++;
                                 tableHtml += `<tr>
@@ -251,9 +224,9 @@ th {
                                     <td>${learner.name}</td>
                                     <td>${learner.learnerCode}</td>
                                     <td>${learner.batch}</td>
-                                    <td>${learner.BS_CIT !== '-' ? learner.BS_CIT : ''}</td>
-                                    <td>${learner.BS_CLS !== '-' ? learner.BS_CLS : ''}</td>
-                                    <td>${learner.BS_CSS !== '-' ? learner.BS_CSS : ''}</td>
+                                    <td>${learner.BS_CIT}</td>
+                                    <td>${learner.BS_CLS}</td>
+                                    <td>${learner.BS_CSS}</td>
                                     <td></td>
                                 </tr>`;
                             }
@@ -264,62 +237,21 @@ th {
                         document.getElementById("printButton").style.display = "block";
                     },
                     error: function(error) {
-                        console.error("Error parsing CSV file:", error);
-                        alert("There was an error parsing the CSV file.");
+                        alert("Error parsing CSV file.");
                     }
                 });
             } catch (err) {
-                console.error(err);
-                document.getElementById("result").textContent = "Error uploading file";
+                alert("Error uploading file.");
             }
         });
 
         document.getElementById("printButton").addEventListener("click", () => {
             const printContent = document.getElementById("result").innerHTML;
-            const originalContent = document.body.innerHTML;
-
-            document.body.innerHTML = printContent;
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
+            const printWindow = window.open("", "", "width=800,height=600");
+            printWindow.document.write(`<html><head><title>Print Report</title></head><body>${printContent}</body></html>`);
+            printWindow.document.close();
+            printWindow.print();
         });
-        // Print functionality
-document.getElementById("printButton").addEventListener("click", function () {
-    let printContent = document.getElementById("result").innerHTML;
-
-    // Remove the unwanted URL from the print content
-    printContent = printContent.replace(
-        /<a[^>]*href="https:\/\/hanumanpawar95\.github\.io\/Beed-Cyber-Slot-wise-exam\/"[^>]*>.*?<\/a>/g,
-        ''
-    );
-
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleString(); // Localized date format
-
-    const printWindow = window.open('', '', 'height=500, width=800');
-    printWindow.document.write('<html><head><title>Print Report</title>');
-    printWindow.document.write('<style>');
-    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
-    printWindow.document.write('table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; border: 3px solid #000; }'); // Dark black border for table
-    printWindow.document.write('th, td { padding: 15px; text-align: left; border: 3px solid #000; vertical-align: middle; }'); // Dark black border for cells
-    printWindow.document.write('th { background-color: #FF5733; color: white; font-weight: bold; text-transform: uppercase; }');
-    printWindow.document.write('td:first-child, th:first-child { border-left: 3px solid #000; }'); // Border for Sr. No
-    printWindow.document.write('td:last-child, th:last-child { border-right: 3px solid #000; }'); // Border for Present Student Sign
-    printWindow.document.write('td:last-child { width: 450px; }'); // Increased width for Present Student Sign column
-    printWindow.document.write('footer { text-align: center; margin-top: 50px; font-size: 14px; color: #888; }');
-    printWindow.document.write('</style>');
-    printWindow.document.write('</head><body>');
-    printWindow.document.write(printContent);
-
-    printWindow.document.write('<footer>');
-    printWindow.document.write('<p>This page developed by <strong>Mr. Hanuman Pawar</strong>.</p>');
-    printWindow.document.write('<p><em>This data is computer generated.</em></p>');
-    printWindow.document.write('<p><strong>Report Date & Time: ' + formattedDate + '</strong></p>');
-    printWindow.document.write('</footer>');
-    printWindow.document.write('</body></html>');
-    printWindow.document.close();
-    printWindow.print();
-});
     </script>
 </body>
 </html>
